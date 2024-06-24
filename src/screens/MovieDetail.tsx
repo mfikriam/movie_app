@@ -2,14 +2,14 @@ import React from 'react'
 import { View, Text, StyleSheet, Button } from 'react-native'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Home = ({ navigation }: any): JSX.Element => {
+const MovieDetail = ({ navigation }: any): JSX.Element => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Movie Page</Text>
+      <Text style={styles.text}>Movie Detail Page</Text>
       <Button
-        title="GO TO MOVIE DETAIL"
+        title="BACK"
         onPress={() => {
-          navigation.navigate('MovieDetail')
+          navigation.navigate('Movie')
         }}
       />
     </View>
@@ -28,4 +28,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default Home
+export default MovieDetail
