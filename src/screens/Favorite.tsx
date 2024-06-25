@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react'
-import { View, StyleSheet, FlatList } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useFocusEffect } from '@react-navigation/native'
 import type { Movie } from '../types/app'
-import MovieItem from '../components/movies/MovieItem'
+import ShowMovies from '../components/movies/ShowMovies'
 
-export default function Favorite(): JSX.Element {
+const Favorite = (): JSX.Element => {
   const [favorites, setFavorites] = useState<Movie[]>([])
 
   const loadFavorites = async (): Promise<void> => {
@@ -31,46 +31,28 @@ export default function Favorite(): JSX.Element {
   // console.log(favorites.map((movie) => movie.title))
   // console.log(`Count Favorites: ${favorites.length}`)
 
-  const renderItem = ({ item }: { item: Movie }) => (
-    <View>
-      <MovieItem
-        movie={item}
-        size={{
-          width: 100,
-          height: 160,
-        }}
-        coverType="poster"
-        key={item.title}
-      />
-    </View>
-  )
-
   return (
     <View style={styles.container}>
-      <FlatList
-        data={favorites}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.title}
-        numColumns={3}
-        columnWrapperStyle={styles.row}
-        // contentContainerStyle={styles.list}
-      />
+      {favorites.length === 0 ? (
+        <Text style={styles.emptyText}>No favorite movies found</Text>
+      ) : (
+        <ShowMovies movies={favorites} />
+      )}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 40,
-    paddingHorizontal: 30,
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
   },
-  // list: {
-  //   justifyContent: 'flex-start',
-  // },
-  row: {
-    justifyContent: 'flex-start',
-    gap: 20,
-    marginBottom: 20,
+  emptyText: {
+    fontSize: 18,
+    color: 'gray',
   },
 })
+
+export default Favorite
