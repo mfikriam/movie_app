@@ -21,7 +21,7 @@ const HomeStackNavigation = (): JSX.Element => {
         name="MovieDetail"
         component={MovieDetail}
         options={{
-          headerShown: false,
+          // headerShown: false,
           animation: 'fade',
           animationDuration: 300,
         }}
