@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, StyleSheet, ImageBackground } from 'react-native'
+import {
+  Text,
+  View,
+  StyleSheet,
+  ImageBackground,
+  TouchableOpacity,
+} from 'react-native'
 import type { Movie } from '../../types/app'
 import { API_ACCESS_TOKEN } from '@env'
 import { FontAwesome } from '@expo/vector-icons'
 import { LinearGradient } from 'expo-linear-gradient'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MovieColumn = ({ title, content }: any): JSX.Element => {
@@ -18,9 +25,11 @@ const MovieColumn = ({ title, content }: any): JSX.Element => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MovieDescription = ({ movieId }: any): JSX.Element => {
   const [movie, setMovie] = useState<Movie>()
+  const [isFavorite, setIsFavorite] = useState(false)
 
   useEffect(() => {
     getMovie()
+    checkIfFavorite(movieId)
   }, [])
 
   const getMovie = (): void => {
@@ -43,6 +52,64 @@ const MovieDescription = ({ movieId }: any): JSX.Element => {
       })
   }
 
+  const checkIfFavorite = async (movieId: number): Promise<void> => {
+    try {
+      const initialData: string | null =
+        await AsyncStorage.getItem('@FavoriteList')
+
+      if (initialData !== null) {
+        const favMovieList: Movie[] = JSON.parse(initialData)
+        const isFav = favMovieList.some((favMovie) => favMovie.id === movieId)
+        setIsFavorite(isFav)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const addFavorite = async (movie: Movie): Promise<void> => {
+    try {
+      const initialData: string | null =
+        await AsyncStorage.getItem('@FavoriteList')
+
+      const favMovieList: Movie[] = initialData ? JSON.parse(initialData) : []
+      favMovieList.push(movie)
+      await AsyncStorage.setItem('@FavoriteList', JSON.stringify(favMovieList))
+      setIsFavorite(true)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const removeFavorite = async (id: number): Promise<void> => {
+    try {
+      const initialData: string | null =
+        await AsyncStorage.getItem('@FavoriteList')
+
+      if (initialData !== null) {
+        let favMovieList: Movie[] = JSON.parse(initialData)
+        favMovieList = favMovieList.filter((favMovie) => favMovie.id !== id)
+        await AsyncStorage.setItem(
+          '@FavoriteList',
+          JSON.stringify(favMovieList),
+        )
+        setIsFavorite(false)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const toggleFavorite = (): void => {
+    if (movie) {
+      if (isFavorite) {
+        removeFavorite(movie.id)
+      } else {
+        addFavorite(movie)
+      }
+    }
+  }
+
   return (
     <View>
       {movie && (
@@ -59,13 +126,23 @@ const MovieDescription = ({ movieId }: any): JSX.Element => {
               locations={[0.6, 0.8]}
               style={styles.gradientStyle}
             >
-              <Text style={styles.movieTitle}>{movie.title}</Text>
-              <View style={styles.ratingContainer}>
-                <FontAwesome name="star" size={20} color="yellow" />
-                <Text style={styles.rating}>
-                  {movie.vote_average.toFixed(1)}
-                </Text>
+              <View>
+                <Text style={styles.movieTitle}>{movie.title}</Text>
+                <View style={styles.ratingContainer}>
+                  <FontAwesome name="star" size={20} color="yellow" />
+                  <Text style={styles.rating}>
+                    {movie.vote_average.toFixed(1)}
+                  </Text>
+                </View>
               </View>
+
+              <TouchableOpacity onPress={toggleFavorite}>
+                <FontAwesome
+                  name={isFavorite ? 'heart' : 'heart-o'}
+                  size={24}
+                  color="pink"
+                />
+              </TouchableOpacity>
             </LinearGradient>
           </ImageBackground>
 
@@ -113,7 +190,9 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     display: 'flex',
-    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
   },
   ratingContainer: {
     flexDirection: 'row',
