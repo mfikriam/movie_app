@@ -27,9 +27,9 @@ export default function Favorite(): JSX.Element {
     }, []),
   )
 
-  console.log()
-  console.log(favorites.map((movie) => movie.title))
-  console.log(`Count Favorites: ${favorites.length}`)
+  // console.log()
+  // console.log(favorites.map((movie) => movie.title))
+  // console.log(`Count Favorites: ${favorites.length}`)
 
   const renderItem = ({ item }: { item: Movie }) => (
     <View>
