@@ -1,30 +1,32 @@
 import React from 'react'
-import { View, Text, StyleSheet, Button } from 'react-native'
+import { ScrollView, View, StyleSheet } from 'react-native'
+import MovieList from '../components/movies/MovieList'
+import MovieDescription from '../components/movies/MovieDescription'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const MovieDetail = ({ navigation }: any): JSX.Element => {
+const MovieDetail = ({ route }: any): JSX.Element => {
+  const { id } = route.params
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Movie Detail Page</Text>
-      <Button
-        title="BACK"
-        onPress={() => {
-          navigation.navigate('Movie')
-        }}
-      />
-    </View>
+    <ScrollView>
+      <View style={styles.container}>
+        <MovieDescription movieId={id} />
+
+        <MovieList
+          title="Recommendation"
+          path={`movie/${id}/recommendations`}
+          coverType="poster"
+        />
+      </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-  },
-  text: {
-    fontSize: 20,
-    textAlign: 'center',
+    justifyContent: 'center',
+    rowGap: 32,
   },
 })
 
