@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Keyboard,
+  ActivityIndicator,
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { API_ACCESS_TOKEN } from '@env'
@@ -16,8 +17,36 @@ const KeywordSearch = (): JSX.Element => {
   const [searchText, setSearchText] = useState('')
   const [submittedText, setSubmittedText] = useState('')
   const [movies, setMovies] = useState<Movie[]>([])
+  const [status, setStatus] = useState('')
+
+  const renderComponent = () => {
+    switch (status) {
+      case 'loading':
+        return <ActivityIndicator size="large" />
+      case 'success':
+        return (
+          <>
+            {movies.length === 0 ? (
+              <Text style={styles.noResults}>No results found</Text>
+            ) : (
+              <ShowMovies movies={movies} />
+            )}
+          </>
+        )
+      case 'error':
+        return (
+          <Text style={styles.errorText}>
+            Something went wrong. Please try again with a correct city name.
+          </Text>
+        )
+      default:
+        return
+    }
+  }
 
   const getMovies = async (keyword: string): Promise<void> => {
+    setStatus('loading')
+
     const encodedKeyword = encodeURIComponent(keyword)
     const url = `https://api.themoviedb.org/3/search/movie?query=${encodedKeyword}`
     const options = {
@@ -32,10 +61,12 @@ const KeywordSearch = (): JSX.Element => {
       .then(async (response) => await response.json())
       .then((data) => {
         setMovies(data.results)
+        setStatus('success')
       })
       .catch((error) => {
         console.log(error)
         setMovies([])
+        setStatus('error')
       })
   }
 
@@ -67,13 +98,7 @@ const KeywordSearch = (): JSX.Element => {
       </View>
 
       {submittedText !== '' && (
-        <View style={styles.resultsContainer}>
-          {movies.length === 0 ? (
-            <Text style={styles.noResults}>No results found</Text>
-          ) : (
-            <ShowMovies movies={movies} />
-          )}
-        </View>
+        <View style={styles.resultsContainer}>{renderComponent()}</View>
       )}
     </>
   )
@@ -103,6 +128,10 @@ const styles = StyleSheet.create({
   noResults: {
     fontSize: 16,
     fontStyle: 'italic',
+    textAlign: 'center',
+  },
+  errorText: {
+    fontSize: 16,
     textAlign: 'center',
   },
 })
