@@ -42,7 +42,6 @@ const CategorySearchResult = ({ route }: any): JSX.Element => {
   const getMovies = async (): Promise<void> => {
     setStatus('loading')
 
-    // const url = `https://api.themoviedb.org/3/list/${genre.id}`
     const url = `https://api.themoviedb.org/3/discover/movie?with_genres=${genre.id}`
     const options = {
       method: 'GET',
