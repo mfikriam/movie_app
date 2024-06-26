@@ -36,7 +36,7 @@ const KeywordSearch = (): JSX.Element => {
       case 'error':
         return (
           <Text style={styles.errorText}>
-            Something went wrong. Please try again with a correct city name.
+            Error when request data from themoviedb.
           </Text>
         )
       default:
