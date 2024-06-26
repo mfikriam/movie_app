@@ -34,7 +34,9 @@ const Favorite = (): JSX.Element => {
   return (
     <View style={styles.container}>
       {favorites.length === 0 ? (
-        <Text style={styles.emptyText}>No favorite movies found</Text>
+        <View style={styles.textContainer}>
+          <Text style={styles.emptyText}>No favorite movies found</Text>
+        </View>
       ) : (
         <ShowMovies movies={favorites} />
       )}
@@ -43,7 +45,8 @@ const Favorite = (): JSX.Element => {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: { margin: 20 },
+  textContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',

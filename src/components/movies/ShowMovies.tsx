@@ -1,47 +1,36 @@
 import React from 'react'
-import { View, FlatList, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import type { Movie } from '../../types/app'
 import MovieItem from '../../components/movies/MovieItem'
+import { FlatGrid } from 'react-native-super-grid'
 
 const ShowMovies = ({ movies }: { movies: Movie[] }): JSX.Element => {
-  const renderItem = ({ item }: { item: Movie }) => (
-    <View>
-      <MovieItem
-        movie={item}
-        size={{
-          width: 100,
-          height: 160,
-        }}
-        coverType="poster"
-        key={item.title}
-      />
-    </View>
-  )
-
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={movies}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.title}
-        numColumns={3}
-        columnWrapperStyle={styles.column}
-      />
-    </View>
+    <FlatGrid
+      itemDimension={100}
+      data={movies}
+      spacing={9}
+      renderItem={({ item }: { item: Movie }) => (
+        <View style={styles.itemContainer}>
+          <MovieItem
+            movie={item}
+            size={{
+              width: 100,
+              height: 160,
+            }}
+            coverType="poster"
+            key={String(item.id)}
+          />
+        </View>
+      )}
+    />
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 40,
-    paddingHorizontal: 30,
-    flex: 1,
-  },
-  column: {
-    alignContent: 'flex-start',
-    justifyContent: 'flex-start',
-    gap: 20,
-    marginBottom: 20,
+  itemContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 })
 
