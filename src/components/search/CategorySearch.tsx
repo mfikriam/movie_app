@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 import { API_ACCESS_TOKEN } from '@env'
 import { FlatGrid } from 'react-native-super-grid'
+import { useNavigation, StackActions } from '@react-navigation/native'
 
 const CategorySearch = (): JSX.Element => {
   const [genres, setGenres] = useState([])
@@ -16,6 +17,11 @@ const CategorySearch = (): JSX.Element => {
     id: number
     name: string
   }>()
+
+  const navigation = useNavigation()
+  const pushAction = StackActions.push('Category Search Result', {
+    genre: selectedGenre,
+  })
 
   useEffect(() => {
     getGenres()
@@ -96,7 +102,12 @@ const CategorySearch = (): JSX.Element => {
       {renderComponent()}
       {selectedGenre && (
         <View style={styles.buttonWrapper}>
-          <TouchableOpacity style={styles.searchButton}>
+          <TouchableOpacity
+            style={styles.searchButton}
+            onPress={() => {
+              navigation.dispatch(pushAction)
+            }}
+          >
             <Text style={styles.searchButtonText}>Search</Text>
           </TouchableOpacity>
         </View>

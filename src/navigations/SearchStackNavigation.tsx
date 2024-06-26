@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { useFocusEffect, CommonActions } from '@react-navigation/native'
 import Search from '../screens/Search'
 import MovieDetail from '../screens/MovieDetail'
+import CategorySearchResult from '../screens/CategorySearchResult'
 
 const Stack = createNativeStackNavigator()
 
@@ -37,6 +38,14 @@ const SearchStackNavigation = ({ navigation }: any): JSX.Element => {
       <Stack.Screen
         name="Movie Detail"
         component={MovieDetail}
+        options={{
+          animation: 'fade',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="Category Search Result"
+        component={CategorySearchResult}
         options={{
           animation: 'fade',
           animationDuration: 300,
